@@ -17,7 +17,7 @@
 metadata {
 	definition (
 		name: "switch",
-		namespace: "pixelpoivre/smartthings-ipx800",
+		namespace: "pixelpoivre",
 		author: "piXelPoivre") {
 
 		capability "Switch"
