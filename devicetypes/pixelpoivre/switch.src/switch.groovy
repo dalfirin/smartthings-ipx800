@@ -20,89 +20,61 @@ metadata {
 		namespace: "pixelpoivre",
 		author: "piXelPoivre") {
 
-		capability "Switch"
+		capability "Switch Level"
+		command "setRangedLevel", ["number"]
 	}
 
 	tiles(scale: 2) {
-		// standard tile with actions
-		standardTile("actionRings", "device.switch", width: 2, height: 2, canChangeIcon: true) {
-			state "off", label: '${currentValue}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff"
-			state "on", label: '${currentValue}', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#79b821"
+		controlTile("tinySlider", "device.level", "slider", height: 2, width: 2, inactiveLabel: false) {
+			state "level", action:"switch level.setLevel"
 		}
 
-		// standard flat tile with actions
-		standardTile("actionFlat", "device.switch", width: 2, height: 2, canChangeIcon: true, decoration: "flat") {
-			state "off", label: '${currentValue}', action: "switch.on", icon: "st.switches.switch.off", backgroundColor: "#ffffff"
-			state "on", label: '${currentValue}', action: "switch.off", icon: "st.switches.switch.on", backgroundColor: "#79b821"
+		controlTile("mediumSlider", "device.level", "slider", height: 2, width: 4, inactiveLabel: false) {
+			state "level", action:"switch level.setLevel"
 		}
 
-		// standard flat tile without actions
-		standardTile("noActionFlat", "device.switch", width: 2, height: 2, canChangeIcon: true) {
-			state "off", label: '${currentValue}',icon: "st.switches.switch.off", backgroundColor: "#ffffff"
-			state "on", label: '${currentValue}', icon: "st.switches.switch.on", backgroundColor: "#79b821"
+		controlTile("largeSlider", "device.level", "slider", decoration: "flat", height: 2, width: 6, inactiveLabel: false) {
+			state "level", action:"switch level.setLevel"
 		}
 
-		// standard flat tile with only a label
-		standardTile("flatLabel", "device.switch", width: 2, height: 2, decoration: "flat") {
-			state "label", label: 'On Action', action: "switch.on", backgroundColor: "#ffffff", defaultState: true
+		controlTile("rangeSlider", "device.rangedLevel", "slider", height: 2, width: 4, range: "(20..80)") {
+			state "level", action:"setRangedLevel"
 		}
 
-		// standard flat tile with icon and label
-		standardTile("flatIconLabel", "device.switch", width: 2, height: 2, decoration: "flat") {
-			state "iconLabel", label: 'Off Action', action: "switch.off", icon:"st.switches.switch.off", backgroundColor: "#ffffff", defaultState: true
+		valueTile("rangeValue", "device.rangedLevel", height: 2, width: 2) {
+			state "range", label:'${currentValue}', defaultState: true
 		}
 
-		// standard flat tile with only icon (Refreh text is IN the icon file)
-		standardTile("flatIcon", "device.switch", width: 2, height: 2, decoration: "flat") {
-			state "icon", action:"refresh.refresh", icon:"st.secondary.refresh", defaultState: true
+		controlTile("rangeSliderConstrained", "device.rangedLevel", "slider", height: 2, width: 4, range: "(40..60)") {
+			state "level", action:"setRangedLevel"
 		}
 
-		// standard with defaultState = true
-		standardTile("flatDefaultState", "null", width: 2, height: 2, decoration: "flat") {
-			state "off", label: 'Fail!', icon: "st.switches.switch.off"
-			state "on", label: 'Pass!', icon: "st.switches.switch.on", defaultState: true
-		}
-
-		// standard with implicit defaultState based on order (0 index is selected)
-		standardTile("flatImplicitDefaultState1", "null", width: 2, height: 2, decoration: "flat") {
-			state "on", label: 'Pass!', icon: "st.switches.switch.on"
-			state "off", label: 'Fail!', icon: "st.switches.switch.off"
-		}
-
-		// standard with implicit defaultState based on state.name == default
-		standardTile("flatImplicitDefaultState2", "null", width: 2, height: 2, decoration: "flat") {
-			state "off", label: 'Fail!', icon: "st.switches.switch.off"
-			state "default", label: 'Pass!', icon: "st.switches.switch.on"
-		}
-
-		// utility tiles to fill the spaces
-		standardTile("empty2x2", "null", width: 2, height: 2, decoration: "flat") {
-			state "emptySmall", label:'', defaultState: true
-		}
-		standardTile("empty4x2", "null", width: 4, height: 2, decoration: "flat") {
-			state "emptyBigger", label:'', defaultState: true
-		}
-
-		// multi-line text (explicit newlines)
-		standardTile("multiLine", "device.multiLine", width: 2, height: 2) {
-			state "multiLine", label: '${currentValue}', defaultState: true
-		}
-
-		standardTile("multiLineWithIcon", "device.multiLine", width: 2, height: 2) {
-			state "multiLineIcon", label: '${currentValue}', icon: "st.switches.switch.off", defaultState: true
-		}
-
-		main("actionRings")
+		main("rangeValue")
 		details([
-			"actionRings", "actionFlat", "noActionFlat",
-
-			"flatLabel", "flatIconLabel", "flatIcon",
-
-			"flatDefaultState", "flatImplicitDefaultState1", "flatImplicitDefaultState2",
-
-			"multiLine", "multiLineWithIcon"
+			"tinySlider", "mediumSlider",
+			"largeSlider",
+			"rangeSlider", "rangeValue",
+			"rangeSliderConstrained"
 		])
 	}
+}
+
+def installed() {
+	sendEvent(name: "level", value: 63)
+	sendEvent(name: "rangedLevel", value: 47)
+}
+
+def parse(String description) {
+}
+
+def setLevel(value) {
+	log.debug "setting level to $value"
+	sendEvent(name:"level", value:value)
+}
+
+def setRangedLevel(value) {
+	log.debug "setting ranged level to $value"
+	sendEvent(name:"rangedLevel", value:value)
 }
 
 def installed() {
