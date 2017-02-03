@@ -76,21 +76,3 @@ def setRangedLevel(value) {
 	log.debug "setting ranged level to $value"
 	sendEvent(name:"rangedLevel", value:value)
 }
-
-def installed() {
-	sendEvent(name: "switch", value: "off")
-	sendEvent(name: "multiLine", value: "Line 1\nLine 2\nLine 3")
-}
-
-def parse(String description) {
-}
-
-def on() {
-	log.debug "on()"
-	sendEvent(name: "switch", value: "on")
-}
-
-def off() {
-	log.debug "off()"
-	sendEvent(name: "switch", value: "off")
-}
