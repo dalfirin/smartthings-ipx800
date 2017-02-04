@@ -18,7 +18,7 @@ metadata {
 	definition (
 		name: "IPX800 Switch",
 		namespace: "pixelpoivre",
-		author: "piXelPoivre") {
+		author: "SmartThings") {
 
 		capability "Switch Level"
 		command "setRangedLevel", ["number"]
