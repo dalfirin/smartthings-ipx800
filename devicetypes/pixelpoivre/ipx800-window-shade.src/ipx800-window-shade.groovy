@@ -49,16 +49,13 @@ metadata {
     }
 
     preferences {
-	section("IPX800 setup") {
-        	input("ipxAddress","string",title: "IP of IPX800 controller", description: "", defaultValue: "192.168.2.4",
+	input("ipxAddress","string",title: "IP of IPX800 controller", description: "", defaultValue: "192.168.2.4",
 		      required: true, displayDuringSetup: true)
-		input("ipxV4RController","number", range: "1..4", title: "Controller ID", description: "", defaultValue: "1",
+		input("ipxV4RController","number", range: "1..8", title: "Controller ID", description: "", defaultValue: "1",
 		      required: true, displayDuringSetup: true)
-    	}
-	section("") {
-		    
-	    }
-	    input ("shadeType", "enum", options:[
+ input("ipxShadeID","number", range: "1..4", title: "Window shade ID", description: "", defaultValue: "1",
+		      required: true, displayDuringSetup: true)
+	input ("shadeType", "enum", options:[
 		"shades": "Window Shades",
 		"blinds": "Window Blinds"],
 		title: "Window Shades or Blinds?", description: "set type (shades or blinds)", defaultValue: "shades",
@@ -138,8 +135,21 @@ def ping() {
 def updated() {
     log.trace "updated() called"
 
-    sendEvent(name: "checkInterval", value: 60 * 60 * 8, data: [protocol: "zwave", hubHardwareId: device.hub.hardwareID], displayed: false)
-
+    def params = [
+        uri:  'http://$(ipxAddress)/',
+        path: 'api/xdevices.json?Get=VR$(ipxV4RController)',
+        contentType: 'application/json',
+        query: [q:'Minneapolis', mode: 'json']
+    ]
+    try {
+        httpGet(params) {resp ->
+            log.debug "resp status: ${resp.status}"
+            log.debug "VR1-1: ${resp.VR1-1}"
+        }
+    } catch (e) {
+        log.error "error: $e"
+    }
+	
     def currstat = device.latestValue("level")
     def currstat1 = device.latestValue("windowShade")
 
