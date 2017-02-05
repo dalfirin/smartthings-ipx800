@@ -16,7 +16,7 @@
  */
 metadata {
 	definition (
-		name: "Switch",
+		name: "IPX800 Switch",
 		namespace: "pixelpoivre",
 		author: "piXelPoivre") {
 
