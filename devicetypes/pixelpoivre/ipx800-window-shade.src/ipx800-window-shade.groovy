@@ -28,7 +28,6 @@ metadata {
         command "TiltSync"
         command "levelOpenClose"
 
-        fingerprint deviceId: "0x1105", inClusters: "0x2C, 0x72, 0x26, 0x20, 0x25, 0x2B, 0x86"
     }
 
     simulator {
@@ -50,7 +49,16 @@ metadata {
     }
 
     preferences {
-	input ("shadeType", "enum", options:[
+	section("IPX800 setup") {
+        	input("ipxAddress","string",title: "IP of IPX800 controller", description: "", defaultValue: "192.168.2.4",
+		      required: true, displayDuringSetup: true)
+		input("ipxV4RController","number", range: "1..4", title: "Controller ID", description: "", defaultValue: "1",
+		      required: true, displayDuringSetup: true)
+    	}
+	section("") {
+		    
+	    }
+	    input ("shadeType", "enum", options:[
 		"shades": "Window Shades",
 		"blinds": "Window Blinds"],
 		title: "Window Shades or Blinds?", description: "set type (shades or blinds)", defaultValue: "shades",
