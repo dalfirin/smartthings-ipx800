@@ -135,20 +135,18 @@ def ping() {
 def updated() {
     log.trace "updated() called"
 
-    def params = [
-        uri:  'http://$(ipxAddress)/',
-        path: 'api/xdevices.json?Get=VR$(ipxV4RController)',
-        contentType: 'application/json',
-        query: [q:'Minneapolis', mode: 'json']
-    ]
-    try {
-        httpGet(params) {resp ->
-            log.debug "resp status: ${resp.status}"
-            log.debug "VR1-1: ${resp.VR1-1}"
-        }
-    } catch (e) {
-        log.error "error: $e"
-    }
+def result = new physicalgraph.device.HubAction(
+    method: "GET",
+    path: "/api/xdevices.json",
+    headers: [
+        HOST: "$(ipxAddress)"
+    ],
+    query: [Get: "VR$(ipxV4RController)"]
+)
+	def parse(description) {
+    
+    def msg = parseLanMessage(description)
+log.debug msg
 	
     def currstat = device.latestValue("level")
     def currstat1 = device.latestValue("windowShade")
