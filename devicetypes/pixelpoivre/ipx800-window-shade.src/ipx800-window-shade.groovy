@@ -143,10 +143,8 @@ def result = new physicalgraph.device.HubAction(
     ],
     query: [Get: "VR$(ipxV4RController)"]
 )
-	def parse(description) {
-    
-    def msg = parseLanMessage(description)
-log.debug msg
+	
+		
 	
     def currstat = device.latestValue("level")
     def currstat1 = device.latestValue("windowShade")
