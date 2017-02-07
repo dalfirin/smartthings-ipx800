@@ -112,11 +112,10 @@ metadata {
                 state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
         }
 
-//  Poll provides data, but the ZRTSII does not provide accurate status
-//
-//      standardTile("poll", "command.poll", width:2, height:2, inactiveLabel: false, decoration: "flat") {
-//              state "default", label:'poll', action:"poll", icon:"st.secondary.poll"
-//      }
+
+     standardTile("poll", "command.poll", width:2, height:2, inactiveLabel: false, decoration: "flat") {
+             state "default", label:'poll', action:"poll", icon:"st.secondary.poll"
+     }
 
         main(["switchmain"])
         details(["shade", "on", "off", "preset"])
@@ -135,14 +134,14 @@ def ping() {
 def updated() {
     log.trace "updated() called"
 
-	def result = new physicalgraph.device.HubAction(
-    method: "GET",
-    path: "/api/xdevices.json",
-    headers: [
-        HOST: "$ipxAddress"
-    ],
-    query: [Get: "VR$(ipxV4RController)"]
-)
+	/*def result = new physicalgraph.device.HubAction(
+	    method: "GET",
+	    path: "/api/xdevices.json",
+	    headers: [
+	        HOST: "$ipxAddress"
+	    ],
+	    query: [Get: "VR$(ipxV4RController)"]
+	)*/
 	
 		
 	
@@ -303,14 +302,11 @@ def refresh() {
     ], 3000)
 }
 
-// If you add the Polling capability to your device type, this command
-// will be called approximately every 5 minutes to check the device's state
-// zrtsII does not provide accurate status of shade position
 
-//def poll() {
-//        log.trace "Poll"
-//        zwave.basicV1.basicGet().format()
-//}
+def poll() {
+        log.trace "Poll"
+        //get device position
+}
 
 def setLevel(level) {
     log.trace "setLevel(level)  {$level}"
@@ -406,11 +402,3 @@ def finishPartialOpenShade() {
     sendEvent(name: "level", value: newlevel)
     sendEvent(name: "switch", value: "on")
 }
-
-// this appears to never be called
-
-//def setLevel(level, duration) {
-//    log.trace "setLevel(level, duration)  {$level} ${duration}"
-//    setLevel(level)
-//    return
-//}
