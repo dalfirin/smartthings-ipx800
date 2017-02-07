@@ -135,11 +135,11 @@ def ping() {
 def updated() {
     log.trace "updated() called"
 
-def result = new physicalgraph.device.HubAction(
+	def result = new physicalgraph.device.HubAction(
     method: "GET",
     path: "/api/xdevices.json",
     headers: [
-        HOST: "$(ipxAddress)"
+        HOST: "$ipxAddress"
     ],
     query: [Get: "VR$(ipxV4RController)"]
 )
@@ -200,99 +200,46 @@ def levelOpenClose(value) {
     }
 }
 
-// Somfy ZRTSII does not report accurate status for the device.
-// This device handler maintains an internal view of device status based on last command
-// reissuing a command to the shade (up, down, preset (my) (when stopped)) does not move the shade if it is already in that position
-// My/stop command does different actions depending if the shade is idle (go to MY position) or moving (stop)
-
-def zwaveEvent(physicalgraph.zwave.commands.basicv1.BasicReport cmd)
-{
-    def result = []
-    def tempstr = ""
-    def statstr = "SAME"
-
-    log.trace "Basic report cmd.value:  ${cmd.value}"
-
-    if (cmd.value == 0) {
-        //result << createEvent(name: "switch", value: "off")
-
-        tempstr = "closed"
-        if (settings?.shadeType) {
-            if (settings.shadeType == "blinds") {
-                tempstr = "tilted open"
-            }
-        }
-    } else if (cmd.value == 0xFF) {
-        //result << createEvent(name: "switch", value: "on")
-        tempstr = "open"
-
-    } else {  // This has never happend
-        //result << createEvent(name: "switch", value: "default")
-        tempstr="neither open or closed"
-    }
-    def swstatstr = "${device.latestValue('switch')}"
-    if (cmd.value == 0 && swstatstr == "on") { statstr = "DIFFERENT" }
-    if (cmd.value == 0xFF && swstatstr == "off") { statstr = "DIFFERENT" }
-        
-    log.debug "${statstr} Zwave state is ${tempstr}; device stored state is ${device.latestValue('switch')} dimmer level: ${device.latestValue('level')} "
-    return result
+private setDeviceId() {
+	//def userpassascii = "${ipxUser}:${ipxPassword}"
+	//def userpass = "Basic " + userpassascii.encodeAsBase64().toString()
+    def host = ipxAddress 
+    def hosthex = convertIPtoHex(host)
+    //def porthex = convertPortToHex(CameraPort)
+    device.deviceNetworkId = "$hosthex"//:$porthex" 
+    
+    log.debug "The device ID is: $device.deviceNetworkId"	
 }
 
-def zwaveEvent(physicalgraph.zwave.commands.switchbinaryv1.SwitchBinaryReport cmd) {
-    def result = []
-    def tempstr = ""
+private String convertIPtoHex(ipAddress) { 
+    String hex = ipAddress.tokenize( '.' ).collect {  String.format( '%02x', it.toInteger() ) }.join()
+    log.debug "IP address entered is $ipAddress and the converted hex code is $hex"
+    return hex
 
-    log.debug "SwitchBinaryReport cmd.value:  ${cmd.value}"
-    
-    if (cmd.value == 0) {
-        tempstr = "closed"
-        if (settings?.shadeType) {
-            if (settings.shadeType == "blinds") {
-                tempstr = "tilted open"
-            }
-        }
-
-    } else if (cmd.value == 0xFF) {
-        tempstr = "open"
-
-    } else {  // this has never happened
-        tempstr="neither open or closed"
-    }
-    log.debug "Reported state is ${tempstr}; device is ${device.latestValue('switch')}  ${device.latestValue('level')} "
-    
-    //result << createEvent(name:"switch", value: cmd.value ? "on" : "off")
-    //result << createEvent(name: "level",value: cmd.value, unit:"%",
-        //descriptionText:"${device.displayName} dimmed ${cmd.value==255 ? 100 : cmd.value}%")
-    return result
 }
 
-def zwaveEvent(physicalgraph.zwave.commands.switchmultilevelv1.SwitchMultilevelReport cmd)
-{
-    def result = []
-    def tempstr = ""
+private String convertPortToHex(port) {
+	String hexport = port.toString().format( '%04x', port.toInteger() )
+    log.debug hexport
+    return hexport
+}
 
-    log.trace "SwitchMultilevelReport cmd.value:  ${cmd.value}"
-    
-    if (cmd.value == 0) {
-        //result << createEvent(name: "switch", value: "off")
-        tempstr = "closed"
-        if (settings?.shadeType) {
-            if (settings.shadeType == "blinds") {
-                tempstr = "tilted open"
-            }
-        }
+private Integer convertHexToInt(hex) {
+	Integer.parseInt(hex,16)
+}
 
-    } else if (cmd.value == 0xFF) {
-        //result << createEvent(name: "switch", value: "on")
-        tempstr = "open"
-    } else {
-        //result << createEvent(name: "switch", value: "default")
-        tempstr="neither open or closed"
-    }
-    //result << createEvent(name: "level",value: cmd.value, unit:"%",
-      //descriptionText:"${device.displayName} dimmed ${cmd.value==255 ? 100 : cmd.value}%")
-    log.debug "Reported state is ${tempstr}; device is ${device.latestValue('switch')}  ${device.latestValue('level')} "
-    return result
+
+private String convertHexToIP(hex) {
+	log.debug("Convert hex to ip: $hex") 
+	[convertHexToInt(hex[0..1]),convertHexToInt(hex[2..3]),convertHexToInt(hex[4..5]),convertHexToInt(hex[6..7])].join(".")
+}
+
+private getHostAddress() {
+    def parts = device.deviceNetworkId.split(":")
+    log.debug device.deviceNetworkId
+    def ip = convertHexToIP(parts[0])
+    //def port = convertHexToInt(parts[1])
+    return ip //+ ":" + port
 }
 
 def on() {
