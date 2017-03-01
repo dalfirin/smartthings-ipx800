@@ -344,8 +344,7 @@ def setLevel(level) {
         		path: path,
         		headers: headers)
 
-        	HubAction.options = [outputMsgToS3:true]
-        	log.debug path
+        	log.debug HubAction
         	return HubAction
         }
         catch (Exception e) {
