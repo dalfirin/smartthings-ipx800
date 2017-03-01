@@ -323,33 +323,16 @@ def setLevel(int level) {
             runIn(15, "finishPartialOpenShade", [overwrite: true])
         }
 
-        def headers = [:]
-        headers.put("HOST", getHostAddress())
+        
         def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
 
-        try {
-        	def HubAction = new physicalgraph.device.HubAction(
-        		method: "GET",
-        		path: path,
-        		headers: headers,
-        		deviceNetworkId: device.deviceNetworkId)
+    	def result = new physicalgraph.device.HubAction(
+    		method: "GET",
+    		path: path,
+    		headers: [HOST:getHostAddress()])
 
-        	log.debug HubAction
-        	return HubAction
-        }
-        catch (Exception e) {
-        	log.debug "Hit Exception $e on $HubAction"
-        }
-
-        // this code below causes commands not be sent/received by the Somfy ZRTSII - I assume delayBetween is asynchronous...
-
-        //log.trace("finished level adjust")
-        //if (newlevel != level) { 
-            //log.trace("finished level adjust1")
-            //delayBetween([
-                //sendEvent(name: "level", value: newlevel)
-            //], 1000)
-        //}
+    	log.debug result
+    	return result
     }
 }
 
