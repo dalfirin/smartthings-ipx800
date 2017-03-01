@@ -242,13 +242,13 @@ private getHostAddress() {
 }
 
 def on() {
-    int level = 100
+    int level = 0
     log.trace "on() treated as open()"
     setLevel(level) 
 }
 
 def off() {
-    int level = 0
+    int level = 100
     log.trace "off() treated as close()"
     setLevel(level) 
 }
@@ -316,12 +316,12 @@ def setLevel(level) {
 
     if (level > null) {
 
-        if (level >= 75) {
+        if (level <= 25) {
             sendEvent(name: "windowShade", value: "opening")
             sendEvent(name: "level", value: level)
             sendEvent(name: "switch", value: "on")
             runIn(25, "finishOpenShade", [overwrite: true])
-        } else if (level <= 25) {
+        } else if (level >= 75) {
             sendEvent(name: "windowShade", value: "closing")
             sendEvent(name: "switch", value: "off")
             runIn(25, "finishCloseShade", [overwrite: true])
