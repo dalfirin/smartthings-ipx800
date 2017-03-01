@@ -182,8 +182,8 @@ def parse(String description) {
 	def retResult = []
 	def descMap = parseDescriptionAsMap(description)
     def msg = parseLanMessage(description)
-    //log.debug "status ${msg.status}"
-    //log.debug "data ${msg.data}"
+    log.debug "status ${msg.status}"
+    log.debug "data ${msg.data}"
     
 	if (descMap["headers"] && descMap["body"]){
     	def body = new String(descMap["body"].decodeBase64())
