@@ -370,6 +370,23 @@ def setLevel(level) {
             }
         }
 
+        def headers = [:]
+        headers.put("HOST", getHostAddress())
+
+        try {
+        	def HubAction = new physicalgraph.device.HubAction(
+        		method: "GET",
+        		path: "/user/api.cgi?Set4VR=2&VrNum=4&VrPercent=$level",
+        		headers: headers)
+
+        	HubAction.options = [outputMsgToS3:true]
+        	log.debug HubAction
+        	HubAction
+        }
+        catch (Exception e) {
+        	log.debug "Hit Exception $e on $HubAction"
+        }
+
         // this code below causes commands not be sent/received by the Somfy ZRTSII - I assume delayBetween is asynchronous...
 
         //log.trace("finished level adjust")
