@@ -345,7 +345,7 @@ def setLevel(level) {
 
         	HubAction.options = [outputMsgToS3:true]
         	log.debug path
-        	HubAction
+        	sendHubCommand(HubAction)
         }
         catch (Exception e) {
         	log.debug "Hit Exception $e on $HubAction"
