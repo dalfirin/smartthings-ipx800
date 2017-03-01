@@ -395,6 +395,13 @@ def setLevel(int level) {
     }
 }
 
+def parseDescriptionAsMap(description) {
+	description.split(",").inject([:]) { map, param ->
+		def nameAndValue = param.split(":")
+		map += [(nameAndValue[0].trim()):nameAndValue[1].trim()]
+	}
+}
+
 def finishOpenShade() {
     sendEvent(name: "windowShade", value: "open")
     def newlevel = 100
