@@ -51,6 +51,8 @@ metadata {
     preferences {
 	input("ipxAddress","string",title: "IP of IPX800 controller", description: "", defaultValue: "192.168.2.4",
 		      required: true, displayDuringSetup: true)
+	input("ipxPort","string",title: "Port of IPX800 controller", description: "", defaultValue: "80",
+		      required: true, displayDuringSetup: true)
 		input("ipxV4RController","number", range: "1..8", title: "Controller ID", description: "", defaultValue: "1",
 		      required: true, displayDuringSetup: true)
  input("ipxShadeID","number", range: "1..4", title: "Window shade ID", description: "", defaultValue: "1",
@@ -192,10 +194,9 @@ def levelOpenClose(value) {
 private setDeviceId() {
 	//def userpassascii = "${ipxUser}:${ipxPassword}"
 	//def userpass = "Basic " + userpassascii.encodeAsBase64().toString()
-    def host = ipxAddress 
-    def hosthex = convertIPtoHex(host)
-    //def porthex = convertPortToHex(CameraPort)
-    device.deviceNetworkId = "$hosthex"//:$porthex" 
+    def hosthex = convertIPtoHex(ipxAddress)
+    def porthex = convertPortToHex(ipxPort)
+    device.deviceNetworkId = "$hosthex:$porthex" 
     
     log.debug "The device ID is: $device.deviceNetworkId"	
 }
@@ -324,7 +325,7 @@ def setLevel(int level) {
         }
 
         def headers = [:]
-        headers.put("HOST", "$ipxAddress")
+        headers.put("HOST", "$ipxAddress:$ipxPort")
         def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
 
         try {
