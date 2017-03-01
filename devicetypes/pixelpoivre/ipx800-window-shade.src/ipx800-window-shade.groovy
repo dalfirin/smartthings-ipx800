@@ -136,14 +136,10 @@ def ping() {
 def updated() {
     log.trace "updated() called"
     setDeviceId()
-	/*def result = new physicalgraph.device.HubAction(
-	    method: "GET",
-	    path: "/api/xdevices.json",
-	    headers: [
-	        HOST: "$ipxAddress"
-	    ],
-	    query: [Get: "VR$(ipxV4RController)"]
-	)*/
+
+    // run a state status every 5min
+	unschedule()
+	runEvery5Minutes(healthPoll)
 	
 		
 	
@@ -178,8 +174,22 @@ def updated() {
     }
 }
 
+def healthPoll() {
+	def path = "/api/xdevices.json?Get=VR$ipxV4RController"
+    //&VrNum=$ipxShadeID&VrPercent=$level
+
+	def result = new physicalgraph.device.HubAction(
+		method: "GET",
+		path: path,
+		headers: [HOST:getHostAddress()])
+
+	log.debug result
+	return result
+}
+
 def parse(String description) {
-    log.debug "description: $description"
+	def msg = parseLanMessage(description)
+    log.debug msg
 }
 
 def levelOpenClose(value) {
@@ -294,16 +304,6 @@ def refresh() {
 
 def poll() {
     log.trace "Poll"
-    def path = "/api/xdevices.json?Get=VR$ipxV4RController"
-    //&VrNum=$ipxShadeID&VrPercent=$level
-
-	def result = new physicalgraph.device.HubAction(
-		method: "GET",
-		path: path,
-		headers: [HOST:getHostAddress()])
-
-	log.debug result
-	return result
 }
 
 def setLevel(int level) {
