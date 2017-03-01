@@ -335,7 +335,7 @@ def setLevel(level) {
         }
 
         def headers = [:]
-        headers.put("HOST", getHostAddress())
+        headers.put("HOST", ipxAddress)
 
         try {
         	def HubAction = new physicalgraph.device.HubAction(
