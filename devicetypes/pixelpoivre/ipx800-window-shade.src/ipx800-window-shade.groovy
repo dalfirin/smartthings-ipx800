@@ -273,15 +273,13 @@ private getHostAddress() {
 }
 
 def on() {
-    int level = 0
     log.trace "on() treated as open()"
-    return setLevel(level) 
+    return setLevel(0) 
 }
 
 def off() {
-    int level = 100
     log.trace "off() treated as close()"
-    return setLevel(level) 
+    return setLevel(100) 
 }
 
 def setLevel() {
