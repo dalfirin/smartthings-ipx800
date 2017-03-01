@@ -275,18 +275,18 @@ private getHostAddress() {
 def on() {
     int level = 0
     log.trace "on() treated as open()"
-    setLevel(level) 
+    return setLevel(level) 
 }
 
 def off() {
     int level = 100
     log.trace "off() treated as close()"
-    setLevel(level) 
+    return setLevel(level) 
 }
 
 def setLevel() {
     log.trace "setLevel() treated as preset position"
-    setLevel(50) 
+    return setLevel(50) 
 }
 
 def open() {
