@@ -343,9 +343,9 @@ def setLevel(level) {
         		path: "/user/api.cgi?Set4VR={$ipxV4RController}&VrNum={$ipxShadeID}&VrPercent={$level}",
         		headers: headers)
 
-        	HubAction.options = [outputMsgToS3:true]
+        	//HubAction.options = [outputMsgToS3:true]
         	log.debug path
-        	return HubAction
+        	sendHubCommand(HubAction, physicalgraph.device.Protocol.LAN)
         }
         catch (Exception e) {
         	log.debug "Hit Exception $e on $HubAction"
