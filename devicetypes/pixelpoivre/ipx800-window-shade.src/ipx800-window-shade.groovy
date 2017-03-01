@@ -177,17 +177,48 @@ def updated() {
 }
 
 def parse(String description) {
-    description
-    def result = null
-    def cmd = zwave.parse(description, [0x20: 1, 0x26: 1, 0x70: 1])
-    log.debug "Parsed ${description} to ${cmd}"
-    if (cmd) {
-        result = zwaveEvent(cmd)
-        log.debug "zwaveEvent( ${cmd} ) returned ${result.inspect()}"
-    } else {
-        log.debug "Non-parsed event: ${description}"
+    log.debug "Parsing '${description}'"
+    def map = [:]
+	def retResult = []
+	def descMap = parseDescriptionAsMap(description)
+    def msg = parseLanMessage(description)
+    //log.debug "status ${msg.status}"
+    //log.debug "data ${msg.data}"
+    
+	if (descMap["headers"] && descMap["body"]){
+    	def body = new String(descMap["body"].decodeBase64())
+        log.debug "Body: ${body}"
     }
-    return result
+    
+    if (msg.body) {
+    
+    //log.debug "Motion Enabled: ${msg.body.contains("enable=yes")}"
+    //log.debug "Motion Disabled: ${msg.body.contains("enable=no")}"
+    //log.debug "PIR Enabled: ${msg.body.contains("pir=yes")}"
+    //log.debug "PIR Disabled: ${msg.body.contains("pir=no")}"
+    
+        if (msg.body.contains("MotionDetectionEnable=1")) {
+            log.debug "Motion is on"
+            sendEvent(name: "switch", value: "on");
+        }
+        else if (msg.body.contains("MotionDetectionEnable=0")) {
+            log.debug "Motion is off"
+            sendEvent(name: "switch", value: "off");
+        }        
+        if(msg.body.contains("MotionDetectionSensitivity="))
+        {
+        	//log.debug msg.body        
+        	String[] lines = msg.body.split( '\n' )
+        	//log.debug lines[2]
+            String[] sensitivity = lines[2].split( '=' )
+            //log.debug sensitivity[1]
+            int[] senseValue = sensitivity[1].toInteger()
+            //log.debug senseValue
+            
+            sendEvent(name: "level",  value: "${senseValue[0]}")
+            //sendEvent(name: "switch.setLevel", value: "${senseValue}")
+        }        
+    }
 }
 
 def levelOpenClose(value) {
