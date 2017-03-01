@@ -331,7 +331,8 @@ def setLevel(int level) {
         	def HubAction = new physicalgraph.device.HubAction(
         		method: "GET",
         		path: path,
-        		headers: headers)
+        		headers: headers,
+        		deviceNetworkId: device.deviceNetworkId)
 
         	log.debug HubAction
         	return HubAction
