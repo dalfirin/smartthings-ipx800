@@ -325,7 +325,7 @@ def setLevel(int level) {
         }
 
         def headers = [:]
-        headers.put("HOST", "$ipxAddress:$ipxPort")
+        headers.put("HOST", getHostAddress())
         def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
 
         try {
