@@ -135,7 +135,7 @@ def ping() {
 
 def updated() {
     log.trace "updated() called"
-
+    setDeviceId()
 	/*def result = new physicalgraph.device.HubAction(
 	    method: "GET",
 	    path: "/api/xdevices.json",
@@ -298,7 +298,6 @@ def poll() {
 }
 
 def setLevel(int level) {
-	setDeviceId()
     log.trace "setLevel(level)  {$level}"
     log.debug "level.inspect " + level.inspect()
 
