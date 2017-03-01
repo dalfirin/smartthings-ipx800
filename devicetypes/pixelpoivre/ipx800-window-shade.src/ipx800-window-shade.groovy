@@ -321,31 +321,10 @@ def setLevel(level) {
             sendEvent(name: "level", value: level)
             sendEvent(name: "switch", value: "on")
             runIn(25, "finishOpenShade", [overwrite: true])
-            delayBetween([
-                zwave.switchMultilevelV1.switchMultilevelSet(value: 0xFF).format(),
-                zwave.basicV1.basicGet().format()
-//                sendEvent(name: "windowShade", value: "open"),
-//                sendEvent(name: "switch", value: "on")
-            ], 4000)
         } else if (level <= 25) {
             sendEvent(name: "windowShade", value: "closing")
             sendEvent(name: "switch", value: "off")
             runIn(25, "finishCloseShade", [overwrite: true])
-            if (settings.shadeType == "shades") {
-                delayBetween([
-                    zwave.switchMultilevelV1.switchMultilevelSet(value: 0x00).format(),
-                    zwave.basicV1.basicGet().format()
-//                    sendEvent(name: "windowShade", value: "closed"),
-//                    sendEvent(name: "switch", value: "off")
-                ], 4000)
-            } else {
-                delayBetween([
-                    zwave.switchMultilevelV1.switchMultilevelStopLevelChange().format(),
-                    zwave.basicV1.basicGet().format()
-//                    sendEvent(name: "windowShade", value: "closed"),
-//                    sendEvent(name: "switch", value: "off")
-                ], 4000)
-            }
         } else {
             def currstat = device.latestValue("windowShade")
             if (currstat == "open") { sendEvent(name: "windowShade", value: "closing") }
@@ -353,21 +332,6 @@ def setLevel(level) {
             sendEvent(name: "level", value: level)
             sendEvent(name: "switch", value: "on")
             runIn(15, "finishPartialOpenShade", [overwrite: true])
-            if (settings.shadeType == "shades") {
-                delayBetween([
-                    zwave.switchMultilevelV1.switchMultilevelStopLevelChange().format(),
-                    zwave.basicV1.basicGet().format()
-//                    sendEvent(name: "windowShade", value: "partially open"),
-//                    sendEvent(name: "switch", value: "default")
-                ], 4000)
-            } else {
-                delayBetween([
-                    zwave.switchMultilevelV1.switchMultilevelSet(value: 0x00).format(),
-                    zwave.basicV1.basicGet().format()
-//                    sendEvent(name: "windowShade", value: "partially open"),
-//                    sendEvent(name: "switch", value: "default")
-                ], 4000)
-            }
         }
 
         def headers = [:]
@@ -376,7 +340,7 @@ def setLevel(level) {
         try {
         	def HubAction = new physicalgraph.device.HubAction(
         		method: "GET",
-        		path: "/user/api.cgi?Set4VR=2&VrNum=4&VrPercent=$level",
+        		path: "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level",
         		headers: headers)
 
         	HubAction.options = [outputMsgToS3:true]
