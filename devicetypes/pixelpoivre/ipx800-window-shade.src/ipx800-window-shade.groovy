@@ -228,8 +228,8 @@ private getHostAddress() {
     def parts = device.deviceNetworkId.split(":")
     log.debug device.deviceNetworkId
     def ip = convertHexToIP(parts[0])
-    //def port = convertHexToInt(parts[1])
-    return ip //+ ":" + port
+    def port = convertHexToInt(parts[1])
+    return ip + ":" + port
 }
 
 def on() {
