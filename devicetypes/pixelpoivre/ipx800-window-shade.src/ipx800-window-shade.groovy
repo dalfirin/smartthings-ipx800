@@ -308,7 +308,7 @@ def poll() {
         //get device position
 }
 
-def setLevel(level) {
+def setLevel(int level) {
 	setDeviceId()
     log.trace "setLevel(level)  {$level}"
     log.debug "level.inspect " + level.inspect()
@@ -336,7 +336,7 @@ def setLevel(level) {
         }
 
         def headers = [:]
-        headers.put("HOST", ipxAddress)
+        headers.put("HOST", "$ipxAddress")
         def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
 
         try {
