@@ -309,6 +309,7 @@ def poll() {
 }
 
 def setLevel(level) {
+	setDeviceId()
     log.trace "setLevel(level)  {$level}"
     log.debug "level.inspect " + level.inspect()
 
