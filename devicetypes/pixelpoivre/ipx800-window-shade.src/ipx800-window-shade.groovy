@@ -293,8 +293,17 @@ def refresh() {
 
 
 def poll() {
-        log.trace "Poll"
-        //get device position
+    log.trace "Poll"
+    def path = "/api/xdevices.json?Get=VR$ipxV4RController"
+    //&VrNum=$ipxShadeID&VrPercent=$level
+
+	def result = new physicalgraph.device.HubAction(
+		method: "GET",
+		path: path,
+		headers: [HOST:getHostAddress()])
+
+	log.debug result
+	return result
 }
 
 def setLevel(int level) {
