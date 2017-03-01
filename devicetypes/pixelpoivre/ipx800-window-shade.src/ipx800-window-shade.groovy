@@ -177,48 +177,7 @@ def updated() {
 }
 
 def parse(String description) {
-    log.debug "Parsing '${description}'"
-    def map = [:]
-	def retResult = []
-	def descMap = parseDescriptionAsMap(description)
-    def msg = parseLanMessage(description)
-    log.debug "status ${msg.status}"
-    log.debug "data ${msg.data}"
-    
-	if (descMap["headers"] && descMap["body"]){
-    	def body = new String(descMap["body"].decodeBase64())
-        log.debug "Body: ${body}"
-    }
-    
-    if (msg.body) {
-    
-    //log.debug "Motion Enabled: ${msg.body.contains("enable=yes")}"
-    //log.debug "Motion Disabled: ${msg.body.contains("enable=no")}"
-    //log.debug "PIR Enabled: ${msg.body.contains("pir=yes")}"
-    //log.debug "PIR Disabled: ${msg.body.contains("pir=no")}"
-    
-        if (msg.body.contains("MotionDetectionEnable=1")) {
-            log.debug "Motion is on"
-            sendEvent(name: "switch", value: "on");
-        }
-        else if (msg.body.contains("MotionDetectionEnable=0")) {
-            log.debug "Motion is off"
-            sendEvent(name: "switch", value: "off");
-        }        
-        if(msg.body.contains("MotionDetectionSensitivity="))
-        {
-        	//log.debug msg.body        
-        	String[] lines = msg.body.split( '\n' )
-        	//log.debug lines[2]
-            String[] sensitivity = lines[2].split( '=' )
-            //log.debug sensitivity[1]
-            int[] senseValue = sensitivity[1].toInteger()
-            //log.debug senseValue
-            
-            sendEvent(name: "level",  value: "${senseValue[0]}")
-            //sendEvent(name: "switch.setLevel", value: "${senseValue}")
-        }        
-    }
+    log.debug "description: $description"
 }
 
 def levelOpenClose(value) {
