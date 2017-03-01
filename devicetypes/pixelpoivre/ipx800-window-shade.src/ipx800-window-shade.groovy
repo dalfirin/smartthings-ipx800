@@ -377,7 +377,7 @@ def setLevel(int level) {
         		headers: headers)
 
         	log.debug HubAction
-        	HubAction
+        	return HubAction
         }
         catch (Exception e) {
         	log.debug "Hit Exception $e on $HubAction"
