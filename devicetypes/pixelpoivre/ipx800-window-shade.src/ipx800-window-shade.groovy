@@ -336,14 +336,15 @@ def setLevel(level) {
 
         def headers = [:]
         headers.put("HOST", ipxAddress)
+        def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
 
         try {
         	def HubAction = new physicalgraph.device.HubAction(
         		method: "GET",
-        		path: "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level",
+        		path: path,
         		headers: headers)
 
-        	//HubAction.options = [outputMsgToS3:true]
+        	HubAction.options = [outputMsgToS3:true]
         	log.debug path
         	return HubAction
         }
