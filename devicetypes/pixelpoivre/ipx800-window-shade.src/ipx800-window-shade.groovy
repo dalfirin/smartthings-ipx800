@@ -221,7 +221,7 @@ private Integer convertHexToInt(hex) {
 
 private String convertHexToIP(hex) {
 	log.debug("Convert hex to ip: $hex") 
-	[convertHexToInt(hex[0..1]),convertHexToInt(hex[2..3]),convertHexToInt(hex[4..5]),convertHexToInt(hex[6..7])].join(".")
+	return [convertHexToInt(hex[0..1]),convertHexToInt(hex[2..3]),convertHexToInt(hex[4..5]),convertHexToInt(hex[6..7])].join(".")
 }
 
 private getHostAddress() {
