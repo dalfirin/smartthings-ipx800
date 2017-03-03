@@ -37,15 +37,13 @@ metadata {
         reply "20014B,delay 5000,2602": "command: 2603, payload: 4B"
         reply "200163,delay 5000,2602": "command: 2603, payload: 63"
     }
-		}
-
-		main("rangeValue")
-		details([
-			"tinySlider", "mediumSlider",
-			"largeSlider",
-			"rangeSlider", "rangeValue",
-			"rangeSliderConstrained"
-		])
+preferences {
+	input("ipxAddress","string",title: "IP of IPX800 controller", description: "", defaultValue: "192.168.2.4",
+		      required: true, displayDuringSetup: true)
+	input("ipxPort","string",title: "Port of IPX800 controller", description: "", defaultValue: "80",
+		      required: true, displayDuringSetup: true)
+		input("ipxRelay","number", range: "1..8", title: "Relay ID", description: "", defaultValue: "1",
+		      required: true, displayDuringSetup: true)
 	}
 }
 
@@ -66,7 +64,7 @@ def off() {
 }
 
 def defineState(int command) {
-	def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
+	def path = "/user/api.cgi?SetR=$ipxRelay"
 
     	def result = new physicalgraph.device.HubAction(
     		method: "GET",
