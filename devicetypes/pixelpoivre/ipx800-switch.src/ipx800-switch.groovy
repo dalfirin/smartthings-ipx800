@@ -45,6 +45,64 @@ preferences {
 		input("ipxRelay","number", range: "1..8", title: "Relay ID", description: "", defaultValue: "1",
 		      required: true, displayDuringSetup: true)
 	}
+	tiles(scale: 2) {
+        multiAttributeTile(name:"shade", type: "lighting", width: 6, height: 4) {
+            tileAttribute("device.windowShade", key: "PRIMARY_CONTROL") {
+                attributeState("unknown", label:'${name}', action:"refresh.refresh", icon:"st.doors.garage.garage-open", backgroundColor:"#ffa81e")
+                attributeState("closed",  label:'${name}', action:"open", icon:"st.doors.garage.garage-closed", backgroundColor:"#bbbbdd", nextState: "opening")
+                attributeState("open",    label:'up', action:"close", icon:"st.doors.garage.garage-open", backgroundColor:"#ffcc33", nextState: "closing")
+                attributeState("partially open", label:'preset', action:"presetPosition", icon:"st.Transportation.transportation13", backgroundColor:"#ffcc33")
+                attributeState("closing", label:'${name}', action:"presetPosition", icon:"st.doors.garage.garage-closing", backgroundColor:"#bbbbdd")
+                attributeState("opening", label:'${name}', action:"presetPosition", icon:"st.doors.garage.garage-opening", backgroundColor:"#ffcc33")
+            }
+            tileAttribute ("device.level", key: "SLIDER_CONTROL") {
+                attributeState("level", action:"switch level.setLevel")
+            }
+            tileAttribute ("device.speedLevel", key: "VALUE_CONTROL") {
+                attributeState("level", action: "levelOpenClose")
+            }
+        }
+
+        standardTile("switchmain", "device.windowShade") {
+            state("unknown", label:'${name}', action:"refresh.refresh", icon:"st.doors.garage.garage-open", backgroundColor:"#ffa81e")
+            state("closed",  label:'${name}', action:"open", icon:"st.doors.garage.garage-closed", backgroundColor:"#bbbbdd", nextState: "opening")
+            state("open",    label:'up', action:"close", icon:"st.doors.garage.garage-open", backgroundColor:"#ffcc33", nextState: "closing")
+            state("partially open", label:'preset', action:"presetPosition", icon:"st.Transportation.transportation13", backgroundColor:"#ffcc33")
+            state("closing", label:'${name}', action:"presetPosition", icon:"st.doors.garage.garage-closing", backgroundColor:"#bbbbdd")
+            state("opening", label:'${name}', action:"presetPosition", icon:"st.doors.garage.garage-opening", backgroundColor:"#ffcc33")
+
+//            state("on", label:'up', action:"switch.off", icon:"st.doors.garage.garage-open", backgroundColor:"#ffcc33")
+//            state("off", label:'closed', action:"switch.on", icon:"st.doors.garage.garage-closed", backgroundColor:"#bbbbdd")
+//            state("default", label:'preset', action:"presetPosition", icon:"st.Transportation.transportation13", backgroundColor:"#ffcc33")
+        }
+
+        standardTile("on", "device.switch", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+            state("on", label:'open', action:"switch.on", icon:"st.doors.garage.garage-opening")
+        }
+        standardTile("off", "device.stopStr", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+            state("close/stop", label:'close/stop', action:"switch.off", icon:"st.doors.garage.garage-closing")
+            state("default", label:'close', action:"switch.off", icon:"st.doors.garage.garage-closing")
+        }
+        standardTile("preset", "device.stopStr", width: 2, height: 2, inactiveLabel: false, decoration: "flat") {
+            state("close/stop", label:'slats open', action:"switch level.setLevel", icon:"st.Transportation.transportation13")
+            state("default", label:'preset/stop', action:"switch level.setLevel", icon:"st.Transportation.transportation13")
+        }
+        controlTile("levelSliderControl", "device.level", "slider", height: 1, width: 3, inactiveLabel: false) {
+            state("level", action:"switch level.setLevel")
+        }
+
+        standardTile("refresh", "command.refresh", width:2, height:2, inactiveLabel: false, decoration: "flat") {
+                state "default", label:'', action:"refresh.refresh", icon:"st.secondary.refresh"
+        }
+
+
+     standardTile("poll", "command.poll", width:2, height:2, inactiveLabel: false, decoration: "flat") {
+             state "default", label:'poll', action:"poll", icon:"st.secondary.poll"
+     }
+
+        main(["switchmain"])
+        details(["shade", "on", "off", "preset"])
+    }
 }
 
 def installed() {
