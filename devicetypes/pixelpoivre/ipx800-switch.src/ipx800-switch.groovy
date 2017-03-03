@@ -54,3 +54,25 @@ def installed() {
 
 def parse(String description) {
 }
+
+def on() {
+    log.trace "on() treated as open()"
+    return setLevel(0) 
+}
+
+def off() {
+    log.trace "off() treated as close()"
+    return setLevel(100) 
+}
+
+def defineState(int command) {
+	def path = "/user/api.cgi?Set4VR=$ipxV4RController&VrNum=$ipxShadeID&VrPercent=$level"
+
+    	def result = new physicalgraph.device.HubAction(
+    		method: "GET",
+    		path: path,
+    		headers: [HOST:getHostAddress()])
+
+    	log.debug result
+    	return result
+}
