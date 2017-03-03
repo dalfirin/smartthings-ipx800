@@ -1,8 +1,5 @@
 /**
- *  GCE IPX800 v4
- *  Wired home automation manager
- *  
- *  Copyright 2017 piXelpoivre
+ *  Copyright 2016 SmartThings, Inc.
  *
  *  Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  *  in compliance with the License. You may obtain a copy of the License at:
@@ -15,38 +12,31 @@
  *
  */
 metadata {
-	definition (
-		name: "IPX800 Switch",
-		namespace: "pixelpoivre",
-		author: "piXelPoivre") {
+	definition (name: "IPX800 Switch", namespace: "pixelpoivre", author: "piXelPoivre") {
+        capability "Switch"
+        //capability "Polling"
+        capability "Refresh"
+        capability "Actuator"
+        capability "Health Check"
+    }
 
-		capability "Switch Level"
-		command "setRangedLevel", ["number"]
-	}
-
-	tiles(scale: 2) {
-		controlTile("tinySlider", "device.level", "slider", height: 2, width: 2, inactiveLabel: false) {
-			state "level", action:"switch level.setLevel"
-		}
-
-		controlTile("mediumSlider", "device.level", "slider", height: 2, width: 4, inactiveLabel: false) {
-			state "level", action:"switch level.setLevel"
-		}
-
-		controlTile("largeSlider", "device.level", "slider", decoration: "flat", height: 2, width: 6, inactiveLabel: false) {
-			state "level", action:"switch level.setLevel"
-		}
-
-		controlTile("rangeSlider", "device.rangedLevel", "slider", height: 2, width: 4, range: "(20..80)") {
-			state "level", action:"setRangedLevel"
-		}
-
-		valueTile("rangeValue", "device.rangedLevel", height: 2, width: 2) {
-			state "range", label:'${currentValue}', defaultState: true
-		}
-
-		controlTile("rangeSliderConstrained", "device.rangedLevel", "slider", height: 2, width: 4, range: "(40..60)") {
-			state "level", action:"setRangedLevel"
+    simulator {
+        status "on":  "command: 2003, payload: FF"
+        status "off": "command: 2003, payload: 00"
+        status "09%": "command: 2003, payload: 09"
+        status "10%": "command: 2003, payload: 0A"
+        status "33%": "command: 2003, payload: 21"
+        status "66%": "command: 2003, payload: 42"
+        status "99%": "command: 2003, payload: 63"
+        
+        // reply messages
+        reply "2001FF,delay 5000,2602": "command: 2603, payload: FF"
+        reply "200100,delay 5000,2602": "command: 2603, payload: 00"
+        reply "200119,delay 5000,2602": "command: 2603, payload: 19"
+        reply "200132,delay 5000,2602": "command: 2603, payload: 32"
+        reply "20014B,delay 5000,2602": "command: 2603, payload: 4B"
+        reply "200163,delay 5000,2602": "command: 2603, payload: 63"
+    }
 		}
 
 		main("rangeValue")
@@ -60,19 +50,7 @@ metadata {
 }
 
 def installed() {
-	sendEvent(name: "level", value: 63)
-	sendEvent(name: "rangedLevel", value: 47)
 }
 
 def parse(String description) {
-}
-
-def setLevel(value) {
-	log.debug "setting level to $value"
-	sendEvent(name:"level", value:value)
-}
-
-def setRangedLevel(value) {
-	log.debug "setting ranged level to $value"
-	sendEvent(name:"rangedLevel", value:value)
 }
