@@ -67,7 +67,7 @@ def parse(String description) {
 
 def on() {
     log.trace "on() treated as open()"
-	def path = "/user/api.cgi?SetR={$ipxRelay.Left(2,""0"")}"
+	def path = "/user/api.cgi?SetR={$ipxRelay.padLeft(2,""0"")}"
 	log.debug path
     	def result = new physicalgraph.device.HubAction(
     		method: "GET",
