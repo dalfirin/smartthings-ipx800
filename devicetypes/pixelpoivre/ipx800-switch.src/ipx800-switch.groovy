@@ -91,6 +91,16 @@ def off() {
     	return result
 }
 
+private setDeviceId() {
+	//def userpassascii = "${ipxUser}:${ipxPassword}"
+	//def userpass = "Basic " + userpassascii.encodeAsBase64().toString()
+    def hosthex = convertIPtoHex(ipxAddress)
+    def porthex = convertPortToHex(ipxPort)
+    device.deviceNetworkId = "$hosthex:$porthex" 
+    
+    log.debug "The device ID is: $device.deviceNetworkId"	
+}
+
 private getHostAddress() {
     def parts = device.deviceNetworkId.split(":")
     log.debug device.deviceNetworkId
