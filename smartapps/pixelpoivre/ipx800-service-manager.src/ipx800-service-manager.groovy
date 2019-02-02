@@ -17,7 +17,7 @@ definition(
 		name: "GCE IPX800 Service Manager",
 		namespace: "pixelpoivre",
 		author: "Ben Abonyi",
-		description: "This is a basic template for a UPnP Service Manager SmartApp, intended for instructional use only",
+		description: "This smartapp installs the GCE IPX800 Manager App so you can add manage your board and associated modules",
 		category: "Lightening",
 		iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
 		iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
