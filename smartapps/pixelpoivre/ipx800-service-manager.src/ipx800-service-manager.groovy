@@ -27,12 +27,17 @@ definition(
 
 
 preferences {
-	page(name: "searchTargetSelection", title: "UPnP Search Target", nextPage: "deviceDiscovery") {
-		section("Search Target") {
-			input "searchTarget", "string", title: "Search Target", defaultValue: "urn:schemas-upnp-org:device:ZonePlayer:1", required: true
-		}
-	}
-	page(name: "deviceDiscovery", title: "UPnP Device Setup", content: "deviceDiscovery")
+    page(name: "mainPage", title: "Existing modules", install: true, uninstall: true) {
+        if(state?.installed) {
+            section("Add a New Module") {
+                app "GCE IPX800 Module", "pixelpoivre", "GCE IPX800 Module Child", title: "New IPX800 module", page: "mainPage", multiple: true, install: true
+            }
+        } else {
+            section("Initial Install") {
+                paragraph "This smartapp installs the GCE IPX800 Manager App so you can add multiple modules. Click 'Done' then go to smartapps in the flyout menu and add new or edit existing modules."
+            }
+        }
+    }
 }
 
 def installed() {
