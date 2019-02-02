@@ -29,9 +29,22 @@ definition(
 preferences {
     page(name: "mainPage", title: "Existing modules", install: true, uninstall: true) {
         if(state?.installed) {
-            section("Add a New Module") {
-                app "GCE IPX800 Module", "pixelpoivre", "GCE IPX800 Module Child", title: "New IPX800 module", page: "mainPage", multiple: true, install: true
-            }
+          section("Relay settings:"){
+            input("RelayIP", "string", title:"Relay IP Address", description: "Please enter your Module's IP Address", required: true, displayDuringSetup: true)
+            input("RelayPort", "string", title:"Relay Port", description: "Please enter your Module's HTTP Port", defaultValue: 80 , required: true, displayDuringSetup: true)
+            input("RelayUser", "string", title:"Relay User", description: "Please enter your Module's username", required: false, displayDuringSetup: true)
+            input("RelayPassword", "password", title:"Relay Password", description: "Please enter your Module's password", required: false, displayDuringSetup: true)
+          }
+          section("Extensions") {
+            input("ExtensionType","enum", title: "Extensions", description: "Please select your extensions", required:false, submitOnChange: true,
+              options: ["X-Dimmer", "X-Display", "X-8D", "X-GSM", "X-8R", "X-4VR", "X-DMX", "X-Eno", "X-24D", "X-4FP"], displayDuringSetup: true)
+          }
+          section("Hub Settings"){
+            input("hubName", "hub", title:"Hub", description: "Please select your Hub", required: true, displayDuringSetup: true)
+          }
+          section("Add a New Extension") {
+                  app "GCE IPX800 Extension", "pixelpoivre", "GCE IPX800 Extension", title: "New IPX800 extension", page: "mainPage", multiple: true, install: true
+          }
         } else {
             section("Initial Install") {
                 paragraph "This smartapp installs the GCE IPX800 Manager App so you can add multiple modules. Click 'Done' then go to smartapps in the flyout menu and add new or edit existing modules."
@@ -55,4 +68,35 @@ def updated() {
 
 def initialize() {
 	state.installed = true
+
+  state.RelayIP = RelayIP
+  state.RelayPort = RelayPort
+  state.RelayUser = RelayUser
+  state.RelayPassword = RelayPassword
+  
+  
+  log.debug "Relay IP: ${state.RelayIP}"
+  log.debug "Relay Port: ${state.RelayPort}"
+  log.debug "Relay User: ${state.RelayUser}"
+  log.debug "Relay Password: ${state.RelayPassword}"
+  
+  
+  try {
+    def DNI = (Math.abs(new Random().nextInt()) % 99999 + 1).toString()
+    def Extensions = getChildDevices()
+    if (Extensions) {
+        Extensions[0].configure()
+    }
+    else {
+      def childDevice = addChildDevice("pixelpoivre", ExtensionType, DNI, hubName.id, [name: app.label, label: app.label, completedSetup: true])
+    }
+  } catch (e) {
+    log.error "Error creating device: ${e}"
+  }
+}
+
+private removeChildDevices(delete) {
+    delete.each {
+        deleteChildDevice(it.deviceNetworkId)
+    }
 }
