@@ -36,7 +36,7 @@ preferences {
           }
           section("Extensions") {
             input("ExtensionType","enum", title: "Extensions", description: "Please select your extensions", required:false, submitOnChange: true,
-              options: ["X-Dimmer", "X-Display", "X-8D", "X-GSM", "X-8R", "X-4VR", "X-DMX", "X-Eno", "X-24D", "X-4FP"], displayDuringSetup: true)
+              options: ["Relays", "X-4VR", "X-8R", "X-Dimmer"], displayDuringSetup: true)
           }
           section("Hub Settings"){
             input("hubName", "hub", title:"Hub", description: "Please select your Hub", required: true, displayDuringSetup: true)
