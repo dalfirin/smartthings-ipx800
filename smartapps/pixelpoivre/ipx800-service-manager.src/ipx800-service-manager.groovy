@@ -18,7 +18,7 @@ definition(
 		namespace: "pixelpoivre",
 		author: "Ben Abonyi",
 		description: "This smartapp installs the GCE IPX800 Manager App so you can add manage your board and associated modules",
-		category: "Lightening",
+		category: "Convenience",
 		iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
 		iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
 		iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
@@ -27,13 +27,12 @@ definition(
 
 
 preferences {
-    page(name: "mainPage", title: "Existing modules", install: true, uninstall: true) {
-        if(state?.installed) {
+    page(name: "mainPage", title: "Installation", install: true, uninstall: true) {
           section("Relay settings:"){
-            input("RelayIP", "string", title:"Relay IP Address", description: "Please enter your Module's IP Address", required: true, displayDuringSetup: true)
-            input("RelayPort", "string", title:"Relay Port", description: "Please enter your Module's HTTP Port", defaultValue: 80 , required: true, displayDuringSetup: true)
-            input("RelayUser", "string", title:"Relay User", description: "Please enter your Module's username", required: false, displayDuringSetup: true)
-            input("RelayPassword", "password", title:"Relay Password", description: "Please enter your Module's password", required: false, displayDuringSetup: true)
+            input("RelayIP", "string", title:"Relay IP Address", description: "Please enter your relay's IP Address", required: true, displayDuringSetup: true)
+            input("RelayPort", "string", title:"Relay Port", description: "Please enter your relay's HTTP Port", defaultValue: 80 , required: true, displayDuringSetup: true)
+            input("RelayUser", "string", title:"Relay User", description: "Please enter your relay's username", required: false, displayDuringSetup: true)
+            input("RelayPassword", "password", title:"Relay Password", description: "Please enter your relay's password", required: false, displayDuringSetup: true)
           }
           section("Extensions") {
             input("ExtensionType","enum", title: "Extensions", description: "Please select your extensions", required:false, submitOnChange: true,
@@ -42,14 +41,12 @@ preferences {
           section("Hub Settings"){
             input("hubName", "hub", title:"Hub", description: "Please select your Hub", required: true, displayDuringSetup: true)
           }
+		section("Switches"){
+			input()
+		}
           section("Add a New Extension") {
                   app "GCE IPX800 Extension", "pixelpoivre", "GCE IPX800 Extension", title: "New IPX800 extension", page: "mainPage", multiple: true, install: true
           }
-        } else {
-            section("Initial Install") {
-                paragraph "This smartapp installs the GCE IPX800 Manager App so you can add multiple modules. Click 'Done' then go to smartapps in the flyout menu and add new or edit existing modules."
-            }
-        }
     }
 }
 
@@ -67,7 +64,6 @@ def updated() {
 }
 
 def initialize() {
-	state.installed = true
 
   state.RelayIP = RelayIP
   state.RelayPort = RelayPort
