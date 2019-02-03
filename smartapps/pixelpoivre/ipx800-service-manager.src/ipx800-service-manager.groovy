@@ -41,12 +41,6 @@ preferences {
           section("Hub Settings"){
             input("hubName", "hub", title:"Hub", description: "Please select your Hub", required: true, displayDuringSetup: true)
           }
-		section("Switches"){
-			input()
-		}
-          section("Add a New Extension") {
-                  app "GCE IPX800 Extension", "pixelpoivre", "GCE IPX800 Extension", title: "New IPX800 extension", page: "mainPage", multiple: true, install: true
-          }
     }
 }
 
