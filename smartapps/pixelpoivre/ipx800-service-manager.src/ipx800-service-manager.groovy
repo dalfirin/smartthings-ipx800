@@ -39,19 +39,19 @@ preferences {
           }
 	    section("Select devices"){
 		    input("extRelay", "bool", title:"Use relay", description: null, displayDuringSetup: true, submitOnChange: true)
-		    if(extRelay){
+		    if(settings?.extRelay){
 			  input(name: "extRelayId", type: "number", range: "1..8", title: "Number of inputs")  
 		    }
 		    input("extX4VR", "bool", title:"Use X-4VR", description: null, displayDuringSetup: true, submitOnChange: true)
-		    if(extX4VR){
+		    if(settings?.extX4VR){
 		input(name: "extX4VRId", type: "number", range: "1..8", title: "Number of modules")
 	    }
 		    input("extX8R", "bool", title:"Use X-8R", description: null, displayDuringSetup: true, submitOnChange: true)
-		    if(extX8R){
+		    if(settings?.extX8R){
 		input(name: "extX8RId", type: "number", range: "1..6", title: "Number of modules")
 	    }
 		    input("extXDimmer", "bool", title:"Use X-Dimmer", description: null, displayDuringSetup: true, submitOnChange: true)
-		    if(extXDimmer){
+		    if(settings?.extXDimmer){
 		input(name: "extXDimmerId", type: "number", range: "1..6", title: "Number of modules")
 	    }
 	    }
@@ -85,5 +85,18 @@ def initialize() {
   log.debug "Relay User: ${state.RelayUser}"
   log.debug "Relay Password: ${state.RelayPassword}"
 
+try {
+        def DNI = (Math.abs(new Random().nextInt()) % 99999 + 1).toString()
+        def modules = getChildDevices()
+        if (modules) {
+            modules[0].configure()
+        }
+        else {
+		if(settings?.extXDimmer){
+        	def childDevice = addChildDevice("pixelpoivre", "GCEXDimmer", DNI, hubName.id, [name: app.label, label: app.label, completedSetup: true])
+		}
+        }
+    } catch (e) {
+    	log.error "Error creating device: ${e}"
+    }
 }
-
