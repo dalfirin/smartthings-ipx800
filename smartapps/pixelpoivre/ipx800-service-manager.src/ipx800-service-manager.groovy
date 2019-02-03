@@ -27,21 +27,36 @@ definition(
 
 
 preferences {
-    page(name: "mainPage", title: "Installation", install: true, uninstall: true) {
-          section("Relay settings:"){
+    page(name: "page1", title: "Installation", install: true, uninstall: true) {
+          section("Server settings:"){
             input("RelayIP", "string", title:"Relay IP Address", description: "Please enter your relay's IP Address", required: true, displayDuringSetup: true)
             input("RelayPort", "string", title:"Relay Port", description: "Please enter your relay's HTTP Port", defaultValue: 80 , required: true, displayDuringSetup: true)
             input("RelayUser", "string", title:"Relay User", description: "Please enter your relay's username", required: false, displayDuringSetup: true)
             input("RelayPassword", "password", title:"Relay Password", description: "Please enter your relay's password", required: false, displayDuringSetup: true)
           }
-          section("Extensions") {
-            input("ExtensionType","enum", title: "Extensions", description: "Please select your extensions", required:false, submitOnChange: true,
-              options: ["Relays", "X-4VR", "X-8R", "X-Dimmer"], displayDuringSetup: true)
-          }
           section("Hub Settings"){
             input("hubName", "hub", title:"Hub", description: "Please select your Hub", required: true, displayDuringSetup: true)
           }
+	    section("Select devices"){
+		    input("extRelay", "bool", title:"Use relay", description: null, displayDuringSetup: true, submitOnChange: true)
+		    if(extRelay){
+			  input(name: "extRelayId", type: "number", range: "1..8", title: "Number of inputs")  
+		    }
+		    input("extX4VR", "bool", title:"Use X-4VR", description: null, displayDuringSetup: true, submitOnChange: true)
+		    if(extX4VR){
+		input(name: "extX4VRId", type: "number", range: "1..8", title: "Number of modules")
+	    }
+		    input("extX8R", "bool", title:"Use X-8R", description: null, displayDuringSetup: true, submitOnChange: true)
+		    if(extX8R){
+		input(name: "extX8RId", type: "number", range: "1..6", title: "Number of modules")
+	    }
+		    input("extXDimmer", "bool", title:"Use X-Dimmer", description: null, displayDuringSetup: true, submitOnChange: true)
+		    if(extXDimmer){
+		input(name: "extXDimmerId", type: "number", range: "1..6", title: "Number of modules")
+	    }
+	    }
     }
+
 }
 
 def installed() {
