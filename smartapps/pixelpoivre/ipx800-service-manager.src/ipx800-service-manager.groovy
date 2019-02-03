@@ -69,24 +69,6 @@ def initialize() {
   log.debug "Relay Port: ${state.RelayPort}"
   log.debug "Relay User: ${state.RelayUser}"
   log.debug "Relay Password: ${state.RelayPassword}"
-  
-  
-  try {
-    def DNI = (Math.abs(new Random().nextInt()) % 99999 + 1).toString()
-    def Extensions = getChildDevices()
-    if (Extensions) {
-        Extensions[0].configure()
-    }
-    else {
-      def childDevice = addChildDevice("pixelpoivre", ExtensionType, DNI, hubName.id, [name: app.label, label: app.label, completedSetup: true])
-    }
-  } catch (e) {
-    log.error "Error creating device: ${e}"
-  }
+
 }
 
-private removeChildDevices(delete) {
-    delete.each {
-        deleteChildDevice(it.deviceNetworkId)
-    }
-}
